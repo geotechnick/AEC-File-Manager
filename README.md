@@ -52,7 +52,7 @@ A locally-runnable, open-source AI system that provides intelligent project dire
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/AEC-File-Manager.git
+   git clone https://github.com/geotechnick/AEC-File-Manager
    cd AEC-File-Manager
    ```
 
