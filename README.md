@@ -340,50 +340,157 @@ PROJECT_NAME_2024/
 
 **Total: 506 directories automatically created for complete project organization**
 
-## 📝 File Naming Conventions
+## 📝 Comprehensive File Naming Conventions
 
-The system supports comprehensive AEC file naming patterns:
+The system enforces standardized naming conventions across all project phases and document types following industry best practices.
 
-### **Standard Format**
+### **Primary Format**
 ```
-ProjectNumber_DisciplineCode_DocumentNumber_RevisionCode_Date.extension
+ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
 ```
 
-### **Examples**
-- `PROJ2024_A_001_R0_2024-01-15.pdf` - Architectural drawing, revision 0
-- `PROJ2024_S_C01_R2_2024-02-20.pdf` - Structural calculation, revision 2  
-- `PROJ2024_M_RFI-001_R0_2024-03-10.pdf` - Mechanical RFI
-- `ABC123_A01-001_IFC_2024-05-01.dwg` - Drawing issued for construction
+### **Document Type Codes**
+#### **Drawings**
+- **DWG** - Drawing, **PLN** - Plan, **SEC** - Section, **DTL** - Detail, **SCH** - Schedule
 
-### **Discipline Codes**
-- **A** - Architectural
-- **S** - Structural  
-- **M** - Mechanical
-- **E** - Electrical
-- **C** - Civil
-- **P** - Plumbing
-- **L** - Landscape
-- **F** - Fire Protection
-- **G** - Geotechnical
-- **I** - Interiors
-- **T** - Technology/Telecom
-- **V** - Vertical Transportation
+#### **Calculations**  
+- **CALC** - Calculation, **LOAD** - Load Calculation, **SIZE** - Sizing Calculation, **PAR** - Parameter Calculation
+
+#### **Reports**
+- **RPT** - Report, **MEMO** - Memorandum, **STUDY** - Study, **EVAL** - Evaluation
+
+#### **Specifications**
+- **SPEC** - Specification, **DIV** - Division
+
+#### **Correspondence**
+- **RFI** - Request for Information, **SUB** - Submittal, **CO** - Change Order, **TXM** - Transmittal, **LTR** - Letter
+
+#### **Models**
+- **BIM** - Building Information Model, **3D** - 3D Model, **CAD** - CAD File
+
+#### **Photos**
+- **PHO** - Photograph, **IMG** - Image
+
+#### **Permits**
+- **PER** - Permit, **APP** - Application
 
 ### **Phase Codes**
-- **PD** - Pre-Design
+- **PD** - Pre-Design/Programming
 - **SD** - Schematic Design
 - **DD** - Design Development
 - **CD** - Construction Documents
 - **CA** - Construction Administration
-- **BI** - Bidding
 - **CO** - Closeout
 
-### **Issue Codes**
-- **IFC** - Issued for Construction
-- **IFR** - Issued for Review
-- **FOR** - Issued for Record
-- **CONST** - Construction Issue
-- **RECORD** - Record Drawing
+### **Discipline Codes**
+- **A** - Architectural, **S** - Structural, **G** - Geotechnical, **C** - Civil
+- **M** - Mechanical, **E** - Electrical, **P** - Plumbing, **H** - Hydraulic
+- **F** - Fire Protection, **L** - Landscape, **I** - Interiors, **T** - Transportation
+- **EN** - Environmental, **SU** - Survey, **PM** - Project Management, **GE** - General/Multi-Discipline
+
+### **Examples by Document Type**
+
+#### **Drawings**
+- `PROJ123_CD_A_DWG_001_R3_2024-03-15.pdf` - Architectural floor plan
+- `PROJ123_DD_S_DWG_S201_R1_2024-02-28.dwg` - Structural framing plan
+- `PROJ123_CD_M_SCH_M401_R0_2024-04-10.pdf` - Mechanical equipment schedule
+
+#### **Calculations**
+- `PROJ123_DD_S_CALC_BEAM_R2_2024-02-20.pdf` - Structural beam calculations
+- `PROJ123_CD_M_SIZE_DUCT_R1_2024-03-25.xlsx` - Mechanical duct sizing
+- `PROJ123_CD_E_LOAD_PANEL_R0_2024-04-05.pdf` - Electrical load calculations
+
+#### **Reports**
+- `PROJ123_PD_G_RPT_GEOTECH_R0_2024-01-10.pdf` - Geotechnical report
+- `PROJ123_SD_EN_STUDY_ENVIR_R1_2024-01-25.pdf` - Environmental study
+- `PROJ123_CA_GE_MEMO_SAFETY_R0_2024-05-15.docx` - Safety memo
+
+#### **Specifications**
+- `PROJ123_CD_A_SPEC_DIV08_R1_2024-03-30.docx` - Division 08 - Openings
+- `PROJ123_CD_M_SPEC_DIV23_R2_2024-04-12.pdf` - Division 23 - HVAC
+
+#### **Correspondence**
+- `PROJ123_CA_M_RFI_001_R0_2024-05-20.pdf` - Mechanical RFI
+- `PROJ123_CA_S_SUB_STEEL_R1_2024-06-01.pdf` - Structural steel submittal
+- `PROJ123_CA_GE_CO_015_R0_2024-06-10.pdf` - Change Order #15
+
+#### **Models and CAD**
+- `PROJ123_DD_A_BIM_MODEL_R2_2024-03-01.rvt` - Architectural BIM model
+- `PROJ123_CD_C_CAD_SITE_R1_2024-04-20.dwg` - Civil site plan CAD
+
+#### **Photos and Documentation**
+- `PROJ123_CA_GE_PHO_PROG_001_2024-05-25.jpg` - Progress photo
+- `PROJ123_PD_A_PHO_EXIST_001_2024-01-05.jpg` - Existing conditions photo
+
+#### **Permits and Approvals**
+- `PROJ123_CD_A_PER_BUILD_R0_2024-04-01.pdf` - Building permit application
+- `PROJ123_CD_C_PER_STORM_R1_2024-04-15.pdf` - Stormwater permit
+
+### **Special Naming Conventions**
+
+#### **Meeting Minutes**
+```
+ProjectNumber_MTG_YYYY-MM-DD_MeetingType.docx
+PROJ123_MTG_2024-03-15_DesignReview.docx
+```
+
+#### **Transmittals**
+```
+ProjectNumber_TXM_RecipientCode_SequentialNumber_Date.pdf
+PROJ123_TXM_CONT_001_2024-05-10.pdf
+```
+
+#### **Shop Drawings**
+```
+ProjectNumber_SHOP_DisciplineCode_Vendor_Item_RevisionNumber_Date.pdf
+PROJ123_SHOP_S_ACME_STEEL_R1_2024-06-15.pdf
+```
+
+#### **As-Built Drawings**
+```
+ProjectNumber_AB_DisciplineCode_SheetNumber_Date.pdf
+PROJ123_AB_A_001_2024-08-30.pdf
+```
+
+### **Revision Control - Check Print and Clean Document System**
+
+#### **Check Print Revisions (Internal Review)**
+- **C01, C02, C03...** - Check print revisions for internal review and coordination
+- Used for design development, internal QA/QC, and coordination between disciplines
+- Not issued to client or external parties
+- Sequential numbering continues throughout project phases
+
+#### **Clean Document Revisions (External Issue)**
+- **R0** - Initial clean issue to client/external parties
+- **R1, R2, R3...** - Subsequent clean revisions issued externally
+- Only issued after internal check print review and approval process
+- Each clean revision incorporates multiple check print iterations
+
+#### **Special Issue Designations**
+- **IFC** - Issued for Construction (replaces final R# for construction documents)
+- **IFB** - Issued for Bidding
+- **IFP** - Issued for Permit
+- **AB** - As-Built version
+- **RFI** - Issued for RFI response
+- **PCO** - Issued for Potential Change Order review
+
+#### **Revision Tracking Examples**
+- `PROJ123_DD_A_DWG_001_C05_2024-03-10.pdf` (5th internal check print)
+- `PROJ123_DD_A_DWG_001_R1_2024-03-15.pdf` (1st clean issue to client)
+- `PROJ123_CD_S_DWG_S201_C12_2024-04-20.pdf` (12th internal check print)
+- `PROJ123_CD_S_DWG_S201_IFC_2024-05-01.pdf` (Final issued for construction)
+
+### **Date Format**
+Always use **YYYY-MM-DD** format for consistent sorting and international compatibility.
+
+### **File Extension Guidelines**
+- **.pdf** - Final issued documents
+- **.dwg** - Native AutoCAD files
+- **.rvt** - Native Revit files
+- **.docx** - Word documents
+- **.xlsx** - Excel spreadsheets
+- **.pptx** - PowerPoint presentations
+- **.jpg/.png** - Images and photos
 
 ## 🚀 Installation
 
