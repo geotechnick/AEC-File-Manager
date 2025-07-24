@@ -1,32 +1,28 @@
-# Core Dependencies
-streamlit>=1.28.0
-pandas>=1.5.0
-plotly>=5.15.0
+# AEC Directory Scanner Requirements
+# Core dependencies for the AEC Directory Scanner system
 
-# File Processing
-PyPDF2>=3.0.0
-python-docx>=0.8.11
-openpyxl>=3.1.0
+# YAML configuration support
+PyYAML>=6.0
 
-# Database
-sqlite3
+# Database support
+# SQLite is included in Python standard library
+# Optional PostgreSQL support (uncomment if needed)
+# psycopg2-binary>=2.9.0
 
-# AI and ML
-sentence-transformers>=2.2.0
-langchain>=0.0.340
-transformers>=4.30.0
-torch>=2.0.0
+# Performance monitoring (optional)
+# psutil>=5.8.0
 
-# Optional Local LLM Support
-# llama-cpp-python>=0.2.0  # Uncomment for local LLM support
-# ollama>=0.1.0            # Uncomment for Ollama integration
+# Enhanced file type support (optional)
+# Pillow>=9.0.0  # For enhanced image metadata extraction
+# PyPDF2>=3.0.0  # For PDF text extraction
+# python-magic>=0.4.24  # For improved MIME type detection
 
-# Utilities
-python-dotenv>=1.0.0
-pathlib
-hashlib
-datetime
-json
-os
-shutil
-typing
+# Development and testing dependencies (optional)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# black>=22.0.0
+# flake8>=4.0.0
+
+# Documentation dependencies (optional)
+# sphinx>=4.0.0
+# sphinx-rtd-theme>=1.0.0
