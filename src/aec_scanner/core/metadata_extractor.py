@@ -512,15 +512,126 @@ class MetadataExtractor:
         # Custom extractors registry
         self.custom_extractors: Dict[str, BaseExtractor] = {}
         
-        # AEC file naming patterns
+        # AEC file naming patterns - Comprehensive system supporting full specification
         self.aec_patterns = {
-            "project_number": r"PROJ\d+",
-            "drawing_number": r"[A-Z]-\d{3}",
-            "revision": r"R\d+",
-            "discipline_code": r"[AMSER]-",  # Architectural, Mechanical, Structural, Electrical, Civil
-            "phase_code": r"(SD|DD|CD|CA)",  # Schematic Design, Design Development, Construction Documents, Construction Admin
-            "sheet_number": r"S\d{2,3}",
-            "date_format": r"\d{4}-\d{2}-\d{2}"
+            # Primary format: ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
+            "primary_format": r"([A-Z0-9]{3,8})_([A-Z]{2})_([A-Z]{1,2}|EN|SU|PM|GE)_([A-Z0-9]{2,6})_([A-Z0-9]{1,4})_([CR]\d{1,2}|[A-Z]{3})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z0-9]{2,4})",
+            
+            # Basic project identification
+            "project_number": r"[A-Z0-9]{3,8}",  # e.g., PROJ123, ABC123456
+            "project_year": r"20\d{2}",  # 2020-2099
+            "date_format": r"\d{4}-\d{2}-\d{2}",  # YYYY-MM-DD
+            
+            # Document identification
+            "document_number": r"[A-Z]\d{2}-\d{3}",  # e.g., A01-001, S02-005
+            "sheet_number": r"[A-Z0-9]{1,4}",  # e.g., 001, A1, S201, M401
+            "drawing_number": r"[A-Z]-\d{3}",  # Legacy format
+            
+            # Revision tracking - Check Print and Clean Document System
+            "revision": r"R\d{1,2}",  # Clean revisions: R0, R1, R15
+            "check_print": r"C\d{1,2}",  # Check print revisions: C01, C02, C15
+            "revision_letter": r"[A-Z]",  # A, B, C for preliminary revisions
+            "issue_code": r"(IFC|IFB|IFP|AB|RFI|PCO|FOR|CONST|RECORD)",  # All issue types
+            
+            # Discipline codes - Full comprehensive list
+            "discipline_code": r"(A|S|G|C|M|E|P|H|F|L|I|T|EN|SU|PM|GE)",
+            "discipline_full": {
+                "A": "Architectural",
+                "S": "Structural",
+                "G": "Geotechnical", 
+                "C": "Civil",
+                "M": "Mechanical",
+                "E": "Electrical",
+                "P": "Plumbing",
+                "H": "Hydraulic",
+                "F": "Fire Protection",
+                "L": "Landscape",
+                "I": "Interiors",
+                "T": "Transportation",
+                "EN": "Environmental",
+                "SU": "Survey",
+                "PM": "Project Management",
+                "GE": "General/Multi-Discipline"
+            },
+            
+            # Phase codes
+            "phase_code": r"(PD|SD|DD|CD|CA|CO)",
+            "phase_full": {
+                "PD": "Pre-Design/Programming",
+                "SD": "Schematic Design",
+                "DD": "Design Development", 
+                "CD": "Construction Documents",
+                "CA": "Construction Administration",
+                "CO": "Closeout"
+            },
+            
+            # Document types - Comprehensive list
+            "document_type": r"(DWG|PLN|SEC|DTL|SCH|CALC|LOAD|SIZE|PAR|RPT|MEMO|STUDY|EVAL|SPEC|DIV|RFI|SUB|CO|TXM|LTR|BIM|3D|CAD|PHO|IMG|PER|APP|MTG|SHOP|AB)",
+            "document_type_full": {
+                # Drawings
+                "DWG": "Drawing",
+                "PLN": "Plan",
+                "SEC": "Section",
+                "DTL": "Detail",
+                "SCH": "Schedule",
+                # Calculations
+                "CALC": "Calculation",
+                "LOAD": "Load Calculation",
+                "SIZE": "Sizing Calculation",
+                "PAR": "Parameter Calculation",
+                # Reports
+                "RPT": "Report",
+                "MEMO": "Memorandum",
+                "STUDY": "Study",
+                "EVAL": "Evaluation",
+                # Specifications
+                "SPEC": "Specification",
+                "DIV": "Division",
+                # Correspondence
+                "RFI": "Request for Information",
+                "SUB": "Submittal",
+                "CO": "Change Order",
+                "TXM": "Transmittal",
+                "LTR": "Letter",
+                # Models
+                "BIM": "Building Information Model",
+                "3D": "3D Model",
+                "CAD": "CAD File",
+                # Photos
+                "PHO": "Photograph",
+                "IMG": "Image",
+                # Permits
+                "PER": "Permit",
+                "APP": "Application",
+                # Special formats
+                "MTG": "Meeting",
+                "SHOP": "Shop Drawing",
+                "AB": "As-Built"
+            },
+            
+            # CSI MasterFormat
+            "csi_division": r"(0[0-9]|1[0-6]|2[0-9]|3[0-9]|4[0-9])",  # 00-49
+            "csi_section": r"\d{2}\s?\d{2}\s?\d{2}",  # 03 30 00 format
+            
+            # Special naming patterns
+            "meeting_format": r"([A-Z0-9]{3,8})_MTG_([0-9]{4}-[0-9]{2}-[0-9]{2})_([A-Za-z]+)\.([a-z]{3,4})",
+            "transmittal_format": r"([A-Z0-9]{3,8})_TXM_([A-Z]{2,4})_([0-9]{3})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
+            "shop_drawing_format": r"([A-Z0-9]{3,8})_SHOP_([A-Z]{1,2})_([A-Z]+)_([A-Z]+)_([CR]\d{1,2})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
+            "as_built_format": r"([A-Z0-9]{3,8})_AB_([A-Z]{1,2})_([A-Z0-9]{1,4})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
+            
+            # Special identifiers
+            "submittal_number": r"SUB-\d{3}",  # SUB-001
+            "rfi_number": r"RFI-\d{3}",  # RFI-001
+            "change_order": r"CO-\d{3}",  # CO-001
+            "sku_number": r"SKU-\d{3}",  # Sketch number
+            
+            # Size and format codes
+            "sheet_size": r"(11X17|24X36|30X42|ARCH[ABCDE]|ANSI[ABCDE])",
+            "scale": r"(NTS|VARIES|\d+\"=\d+'?-?\d*\"?)",
+            
+            # Status indicators
+            "status": r"(DRAFT|PRELIM|FINAL|VOID|SUPERSEDED)",
+            "confidential": r"(CONFIDENTIAL|PROPRIETARY|NOT FOR CONSTRUCTION)"
         }
     
     def extract_metadata(self, file_path: str) -> ExtractorResult:
@@ -584,7 +695,7 @@ class MetadataExtractor:
     
     def extract_aec_metadata(self, file_path: str, naming_convention: Optional[Dict] = None) -> Dict[str, Any]:
         """
-        Extract AEC-specific metadata from file path and naming conventions.
+        Extract AEC-specific metadata from comprehensive file naming conventions.
         
         Args:
             file_path: Path to the file
@@ -595,111 +706,215 @@ class MetadataExtractor:
         """
         patterns = naming_convention or self.aec_patterns
         file_path_obj = Path(file_path)
-        filename = file_path_obj.stem  # Filename without extension
+        filename = file_path_obj.name  # Full filename with extension
         
         aec_metadata = {
             "is_aec_standard": False,
+            "naming_format": None,
             "project_number": None,
-            "discipline_code": None,
-            "document_type": None,
             "phase_code": None,
-            "drawing_number": None,
-            "revision": None,
+            "phase_name": None,
+            "discipline_code": None,
+            "discipline_name": None,
+            "document_type": None,
+            "document_type_name": None,
             "sheet_number": None,
-            "extracted_date": None,
+            "revision": None,
+            "revision_type": None,  # "check_print", "clean", "issue_code"
+            "date_issued": None,
+            "issue_code": None,
+            "drawing_number": None,
             "csi_division": None,
+            "csi_section": None,
+            "special_identifiers": [],
+            "extracted_elements": [],
             "keywords": []
         }
         
         try:
+            # Try primary format first: ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
+            primary_match = re.search(patterns["primary_format"], filename, re.IGNORECASE)
+            if primary_match:
+                aec_metadata["naming_format"] = "primary"
+                aec_metadata["is_aec_standard"] = True
+                aec_metadata["project_number"] = primary_match.group(1)
+                aec_metadata["phase_code"] = primary_match.group(2)
+                aec_metadata["discipline_code"] = primary_match.group(3)
+                aec_metadata["document_type"] = primary_match.group(4).upper()
+                aec_metadata["sheet_number"] = primary_match.group(5)
+                aec_metadata["revision"] = primary_match.group(6)
+                aec_metadata["date_issued"] = primary_match.group(7)
+                
+                # Determine revision type
+                if aec_metadata["revision"].startswith('C'):
+                    aec_metadata["revision_type"] = "check_print"
+                elif aec_metadata["revision"].startswith('R'):
+                    aec_metadata["revision_type"] = "clean"
+                else:
+                    aec_metadata["revision_type"] = "issue_code"
+                
+                # Get full names
+                aec_metadata["phase_name"] = patterns["phase_full"].get(aec_metadata["phase_code"], "Unknown")
+                aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
+                aec_metadata["document_type_name"] = patterns["document_type_full"].get(aec_metadata["document_type"], "Unknown")
+                
+                aec_metadata["extracted_elements"] = ["project_number", "phase_code", "discipline_code", "document_type", "sheet_number", "revision", "date_issued"]
+                return aec_metadata
+            
+            # Try special formats
+            special_formats = {
+                "meeting": patterns["meeting_format"],
+                "transmittal": patterns["transmittal_format"],
+                "shop_drawing": patterns["shop_drawing_format"],
+                "as_built": patterns["as_built_format"]
+            }
+            
+            for format_name, pattern in special_formats.items():
+                match = re.search(pattern, filename, re.IGNORECASE)
+                if match:
+                    aec_metadata["naming_format"] = format_name
+                    aec_metadata["is_aec_standard"] = True
+                    aec_metadata["project_number"] = match.group(1)
+                    
+                    if format_name == "meeting":
+                        aec_metadata["date_issued"] = match.group(2)
+                        aec_metadata["document_type"] = "MTG"
+                        aec_metadata["document_type_name"] = "Meeting"
+                        aec_metadata["extracted_elements"] = ["project_number", "date_issued", "document_type"]
+                    
+                    elif format_name == "transmittal":
+                        aec_metadata["date_issued"] = match.group(4)
+                        aec_metadata["document_type"] = "TXM"
+                        aec_metadata["document_type_name"] = "Transmittal"
+                        aec_metadata["extracted_elements"] = ["project_number", "date_issued", "document_type"]
+                    
+                    elif format_name == "shop_drawing":
+                        aec_metadata["discipline_code"] = match.group(2)
+                        aec_metadata["revision"] = match.group(5)
+                        aec_metadata["date_issued"] = match.group(6)
+                        aec_metadata["document_type"] = "SHOP"
+                        aec_metadata["document_type_name"] = "Shop Drawing"
+                        aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
+                        aec_metadata["extracted_elements"] = ["project_number", "discipline_code", "revision", "date_issued", "document_type"]
+                    
+                    elif format_name == "as_built":
+                        aec_metadata["discipline_code"] = match.group(2)
+                        aec_metadata["sheet_number"] = match.group(3)
+                        aec_metadata["date_issued"] = match.group(4)
+                        aec_metadata["document_type"] = "AB"
+                        aec_metadata["document_type_name"] = "As-Built"
+                        aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
+                        aec_metadata["extracted_elements"] = ["project_number", "discipline_code", "sheet_number", "date_issued", "document_type"]
+                    
+                    return aec_metadata
+            
+            # Fallback to individual pattern matching for legacy formats
+            aec_metadata["naming_format"] = "legacy"
+            filename_no_ext = file_path_obj.stem  # Filename without extension
+            
             # Extract project number
-            project_match = re.search(patterns["project_number"], filename)
+            project_match = re.search(patterns["project_number"], filename_no_ext, re.IGNORECASE)
             if project_match:
                 aec_metadata["project_number"] = project_match.group(0)
                 aec_metadata["is_aec_standard"] = True
+                aec_metadata["extracted_elements"].append("project_number")
             
             # Extract discipline code
-            discipline_match = re.search(patterns["discipline_code"], filename)
+            discipline_match = re.search(patterns["discipline_code"], filename_no_ext)
             if discipline_match:
-                discipline_code = discipline_match.group(0).rstrip('-')
-                aec_metadata["discipline_code"] = discipline_code
-                
-                # Map discipline codes to full names
-                discipline_map = {
-                    'A': 'Architectural',
-                    'M': 'Mechanical',
-                    'S': 'Structural', 
-                    'E': 'Electrical',
-                    'R': 'Civil'
-                }
-                aec_metadata["discipline_name"] = discipline_map.get(discipline_code, 'Unknown')
+                disc_code = discipline_match.group(0)
+                aec_metadata["discipline_code"] = disc_code
+                aec_metadata["discipline_name"] = patterns["discipline_full"].get(disc_code, "Unknown")
+                aec_metadata["extracted_elements"].append("discipline_code")
             
-            # Extract drawing number
-            drawing_match = re.search(patterns["drawing_number"], filename)
-            if drawing_match:
-                aec_metadata["drawing_number"] = drawing_match.group(0)
-            
-            # Extract revision
-            revision_match = re.search(patterns["revision"], filename)
-            if revision_match:
-                aec_metadata["revision"] = revision_match.group(0)
+            # Extract document type
+            doc_match = re.search(patterns["document_type"], filename_no_ext, re.IGNORECASE)
+            if doc_match:
+                doc_type = doc_match.group(0).upper()
+                aec_metadata["document_type"] = doc_type
+                aec_metadata["document_type_name"] = patterns["document_type_full"].get(doc_type, "Unknown")
+                aec_metadata["extracted_elements"].append("document_type")
             
             # Extract phase code
-            phase_match = re.search(patterns["phase_code"], filename)
+            phase_match = re.search(patterns["phase_code"], filename_no_ext)
             if phase_match:
                 phase_code = phase_match.group(0)
                 aec_metadata["phase_code"] = phase_code
-                
-                # Map phase codes to full names
-                phase_map = {
-                    'SD': 'Schematic Design',
-                    'DD': 'Design Development',
-                    'CD': 'Construction Documents',
-                    'CA': 'Construction Administration'
-                }
-                aec_metadata["phase_name"] = phase_map.get(phase_code, 'Unknown')
+                aec_metadata["phase_name"] = patterns["phase_full"].get(phase_code, "Unknown")
+                aec_metadata["extracted_elements"].append("phase_code")
+            
+            # Extract revision - check for check prints first
+            check_print_match = re.search(patterns["check_print"], filename_no_ext, re.IGNORECASE)
+            if check_print_match:
+                aec_metadata["revision"] = check_print_match.group(0).upper()
+                aec_metadata["revision_type"] = "check_print"
+                aec_metadata["extracted_elements"].append("revision")
+            else:
+                rev_match = re.search(patterns["revision"], filename_no_ext, re.IGNORECASE)
+                if rev_match:
+                    aec_metadata["revision"] = rev_match.group(0).upper()
+                    aec_metadata["revision_type"] = "clean"
+                    aec_metadata["extracted_elements"].append("revision")
+            
+            # Extract issue code
+            issue_match = re.search(patterns["issue_code"], filename_no_ext)
+            if issue_match:
+                aec_metadata["issue_code"] = issue_match.group(0)
+                aec_metadata["revision_type"] = "issue_code"
+                aec_metadata["extracted_elements"].append("issue_code")
             
             # Extract sheet number
-            sheet_match = re.search(patterns["sheet_number"], filename)
+            sheet_match = re.search(patterns["sheet_number"], filename_no_ext)
             if sheet_match:
                 aec_metadata["sheet_number"] = sheet_match.group(0)
+                aec_metadata["extracted_elements"].append("sheet_number")
             
             # Extract date
-            date_match = re.search(patterns["date_format"], filename)
+            date_match = re.search(patterns["date_format"], filename_no_ext)
             if date_match:
-                aec_metadata["extracted_date"] = date_match.group(0)
+                aec_metadata["date_issued"] = date_match.group(0)
+                aec_metadata["extracted_elements"].append("date_issued")
             
-            # Determine document type based on file extension and patterns
-            file_ext = file_path_obj.suffix.lower()
-            if file_ext in {'.pdf', '.dwg', '.dxf'}:
-                if aec_metadata["drawing_number"]:
-                    aec_metadata["document_type"] = "Drawing"
-                elif "spec" in filename.lower():
-                    aec_metadata["document_type"] = "Specification"
-                elif "detail" in filename.lower():
-                    aec_metadata["document_type"] = "Detail"
-                else:
-                    aec_metadata["document_type"] = "Technical Document"
+            # Extract CSI information
+            csi_div_match = re.search(patterns["csi_division"], filename_no_ext)
+            if csi_div_match:
+                aec_metadata["csi_division"] = csi_div_match.group(0)
+                aec_metadata["extracted_elements"].append("csi_division")
+            
+            csi_sec_match = re.search(patterns["csi_section"], filename_no_ext)
+            if csi_sec_match:
+                aec_metadata["csi_section"] = csi_sec_match.group(0)
+                aec_metadata["extracted_elements"].append("csi_section")
+            
+            # Extract special identifiers
+            special_patterns = ["submittal_number", "rfi_number", "change_order", "sku_number"]
+            for pattern_name in special_patterns:
+                special_match = re.search(patterns[pattern_name], filename_no_ext, re.IGNORECASE)
+                if special_match:
+                    aec_metadata["special_identifiers"].append({
+                        "type": pattern_name,
+                        "value": special_match.group(0)
+                    })
+                    aec_metadata["extracted_elements"].append(pattern_name)
             
             # Extract keywords from filename
-            keywords = []
             keyword_patterns = [
                 r"plan", r"elevation", r"section", r"detail", r"schedule",
-                r"spec", r"drawing", r"sheet", r"layout", r"diagram"
+                r"spec", r"drawing", r"sheet", r"layout", r"diagram", r"calc",
+                r"report", r"memo", r"study", r"evaluation", r"permit", r"photo"
             ]
             
             for pattern in keyword_patterns:
-                if re.search(pattern, filename.lower()):
-                    keywords.append(pattern)
+                if re.search(pattern, filename_no_ext.lower()):
+                    aec_metadata["keywords"].append(pattern)
             
-            aec_metadata["keywords"] = keywords
+            # Determine if this follows AEC standards based on extracted elements
+            if len(aec_metadata["extracted_elements"]) >= 2:
+                aec_metadata["is_aec_standard"] = True
             
             # Determine parent folder type for additional context
             parent_folder = file_path_obj.parent.name
-            if parent_folder in ["01_Project_Management", "02_Programming", "03_Schematic_Design",
-                               "04_Design_Development", "05_Construction_Documents", "06_Bidding_Procurement",
-                               "07_Construction_Administration", "08_Post_Construction"]:
-                aec_metadata["folder_context"] = parent_folder
+            aec_metadata["folder_context"] = parent_folder
             
         except Exception as e:
             self.logger.error(f"Error extracting AEC metadata: {e}")

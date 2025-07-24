@@ -93,7 +93,8 @@ class AECDirectoryScanner:
         self, 
         project_number: str, 
         project_name: str, 
-        base_path: str
+        base_path: str,
+        project_year: Optional[str] = None
     ) -> Dict[str, Union[bool, str, int]]:
         """
         Initialize a new AEC project with standard directory structure.
@@ -102,16 +103,17 @@ class AECDirectoryScanner:
             project_number: Unique project identifier
             project_name: Human-readable project name
             base_path: Root path where project will be created
+            project_year: Optional project year (defaults to current year)
             
         Returns:
             Dictionary containing initialization results
         """
         try:
-            self.logger.info(f"Initializing project: {project_number} - {project_name}")
+            self.logger.info(f"Initializing project: {project_number} - {project_name} ({project_year or 'current year'})")
             
             # Create directory structure
             structure_result = self.directory_manager.create_project_structure(
-                project_number, project_name, base_path
+                project_number, project_name, base_path, project_year
             )
             
             if not structure_result["success"]:

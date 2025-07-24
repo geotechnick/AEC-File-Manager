@@ -109,12 +109,15 @@ def format_output(data: dict, format_type: str = 'json') -> str:
 
 def cmd_init(args, scanner: AECDirectoryScanner) -> int:
     """Initialize a new project."""
-    print(f"Initializing project: {args.project_number} - {args.project_name}")
+    project_year = getattr(args, 'project_year', None)
+    year_text = f" ({project_year})" if project_year else ""
+    print(f"Initializing project: {args.project_number} - {args.project_name}{year_text}")
     
     result = scanner.initialize_project(
         args.project_number,
         args.project_name,
-        args.path
+        args.path,
+        project_year
     )
     
     print(format_output(result, args.format))
@@ -377,7 +380,7 @@ def create_parser() -> argparse.ArgumentParser:
         epilog="""
 Examples:
   # Initialize new project
-  aec-scanner init --project-number PROJ2024 --project-name "Office Building" --path "/projects/office_building"
+  aec-scanner init --project-number PROJ2024 --project-name "Office Building" --path "/projects/office_building" --project-year 2024
   
   # Full project scan
   aec-scanner scan --project-id 1 --type full --verbose
@@ -407,6 +410,7 @@ Examples:
     init_parser.add_argument('--project-number', required=True, help='Project number')
     init_parser.add_argument('--project-name', required=True, help='Project name')
     init_parser.add_argument('--path', required=True, help='Base path for project')
+    init_parser.add_argument('--project-year', help='Project year (defaults to current year)')
     
     # Scan project
     scan_parser = subparsers.add_parser('scan', help='Scan project directory')
