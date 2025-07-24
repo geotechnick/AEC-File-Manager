@@ -502,7 +502,7 @@ Always use **YYYY-MM-DD** format for consistent sorting and international compat
 ### Quick Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/aec-directory-scanner.git
+git clone https://github.com/geotechnick/AEC-File-Manager
 cd aec-directory-scanner
 
 # Install dependencies
