@@ -8,8 +8,29 @@ with support for environment variable overrides and validation.
 import os
 import yaml
 import logging
+import threading
+import time
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, List
+from typing import Dict, Any, Optional, Union, List, Callable
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+from ..exceptions import ConfigurationError, ValidationError
+
+
+class ConfigFileHandler(FileSystemEventHandler):
+    """File system event handler for configuration file changes."""
+    
+    def __init__(self, config_manager):
+        self.config_manager = config_manager
+        self.logger = logging.getLogger(__name__)
+    
+    def on_modified(self, event):
+        if not event.is_directory and event.src_path == self.config_manager.config_path:
+            self.logger.info(f"Configuration file modified: {event.src_path}")
+            # Add delay to avoid multiple rapid reloads
+            time.sleep(0.5)
+            self.config_manager._handle_config_change()
 
 
 class ConfigManager:
@@ -85,16 +106,22 @@ class ConfigManager:
         }
     }
     
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config_path: Optional[str] = None, enable_hot_reload: bool = False):
         """
         Initialize the configuration manager.
         
         Args:
             config_path: Optional path to configuration file
+            enable_hot_reload: Enable automatic reloading when config file changes
         """
         self.logger = logging.getLogger(__name__)
         self.config_path = config_path
         self.config: Dict[str, Any] = {}
+        self.enable_hot_reload = enable_hot_reload
+        self._config_lock = threading.RLock()
+        self._change_callbacks: List[Callable] = []
+        self._observer = None
+        self._last_reload_time = 0
         
         # Load configuration
         self._load_config()
@@ -104,6 +131,10 @@ class ConfigManager:
         
         # Validate configuration
         self._validate_config()
+        
+        # Set up hot reload if enabled and config file exists
+        if self.enable_hot_reload and self.config_path and os.path.exists(self.config_path):
+            self._setup_hot_reload()
         
         self.logger.info(f"Configuration loaded from: {self.config_path or 'default'}")
     
@@ -452,3 +483,156 @@ class ConfigManager:
         # This is a simplified version - in a full implementation,
         # you might use a YAML library that preserves comments
         return config
+    
+    def _setup_hot_reload(self):
+        """Set up file system monitoring for configuration hot reload."""
+        try:
+            self._observer = Observer()
+            event_handler = ConfigFileHandler(self)
+            
+            config_dir = os.path.dirname(os.path.abspath(self.config_path))
+            self._observer.schedule(event_handler, config_dir, recursive=False)
+            self._observer.start()
+            
+            self.logger.info(f"Hot reload enabled for configuration file: {self.config_path}")
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to set up configuration hot reload: {e}")
+            self.enable_hot_reload = False
+    
+    def _handle_config_change(self):
+        """Handle configuration file change event."""
+        current_time = time.time()
+        
+        # Prevent rapid successive reloads
+        if current_time - self._last_reload_time < 1.0:
+            return
+        
+        self._last_reload_time = current_time
+        
+        with self._config_lock:
+            try:
+                old_config = self._deep_copy_dict(self.config)
+                
+                # Reload configuration
+                self._load_config()
+                self._apply_env_overrides()
+                self._validate_config()
+                
+                self.logger.info("Configuration reloaded successfully due to file change")
+                
+                # Notify change callbacks
+                for callback in self._change_callbacks:
+                    try:
+                        callback(old_config, self.config)
+                    except Exception as e:
+                        self.logger.error(f"Error in configuration change callback: {e}")
+                        
+            except Exception as e:
+                self.logger.error(f"Failed to reload configuration: {e}")
+    
+    def add_change_callback(self, callback: Callable[[Dict[str, Any], Dict[str, Any]], None]):
+        """
+        Add a callback function to be called when configuration changes.
+        
+        Args:
+            callback: Function that takes (old_config, new_config) as parameters
+        """
+        self._change_callbacks.append(callback)
+        self.logger.debug(f"Added configuration change callback: {callback.__name__}")
+    
+    def remove_change_callback(self, callback: Callable):
+        """Remove a configuration change callback."""
+        if callback in self._change_callbacks:
+            self._change_callbacks.remove(callback)
+            self.logger.debug(f"Removed configuration change callback: {callback.__name__}")
+    
+    def shutdown(self):
+        """Shutdown the configuration manager and stop file monitoring."""
+        if self._observer:
+            self._observer.stop()
+            self._observer.join()
+            self.logger.info("Configuration file monitoring stopped")
+    
+    def validate_configuration_schema(self) -> List[str]:
+        """
+        Perform comprehensive configuration validation.
+        
+        Returns:
+            List of validation error messages
+        """
+        errors = []
+        
+        try:
+            # Validate database configuration
+            db_config = self.get_database_config()
+            
+            if db_config.get('type') == 'postgresql':
+                required_fields = ['host', 'port', 'database', 'username']
+                for field in required_fields:
+                    if not db_config.get(field):
+                        errors.append(f"PostgreSQL database configuration missing required field: {field}")
+            
+            elif db_config.get('type') == 'sqlite':
+                if not db_config.get('path'):
+                    errors.append("SQLite database configuration missing 'path' field")
+            
+            # Validate scanning configuration
+            scanning_config = self.get_scanning_config()
+            
+            max_workers = scanning_config.get('max_workers', 0)
+            if not isinstance(max_workers, int) or max_workers < 1 or max_workers > 100:
+                errors.append(f"Invalid max_workers value: {max_workers}. Must be integer between 1 and 100")
+            
+            batch_size = scanning_config.get('batch_size', 0)
+            if not isinstance(batch_size, int) or batch_size < 1 or batch_size > 10000:
+                errors.append(f"Invalid batch_size value: {batch_size}. Must be integer between 1 and 10000")
+            
+            max_file_size = scanning_config.get('max_file_size_mb', 0)
+            if not isinstance(max_file_size, (int, float)) or max_file_size <= 0:
+                errors.append(f"Invalid max_file_size_mb value: {max_file_size}. Must be positive number")
+            
+            # Validate file naming patterns
+            if not self.validate_file_naming_patterns():
+                errors.append("One or more file naming regex patterns are invalid")
+            
+            # Validate logging configuration
+            logging_config = self.get_logging_config()
+            log_level = logging_config.get('level', '').upper()
+            valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+            if log_level not in valid_levels:
+                errors.append(f"Invalid log level: {log_level}. Must be one of {valid_levels}")
+            
+            # Validate performance configuration
+            perf_config = self.config.get('performance', {})
+            
+            connection_timeout = perf_config.get('connection_timeout', 0)
+            if not isinstance(connection_timeout, (int, float)) or connection_timeout <= 0:
+                errors.append(f"Invalid connection_timeout: {connection_timeout}. Must be positive number")
+            
+            cache_size = perf_config.get('cache_size_mb', 0)
+            if not isinstance(cache_size, (int, float)) or cache_size < 0:
+                errors.append(f"Invalid cache_size_mb: {cache_size}. Must be non-negative number")
+                
+        except Exception as e:
+            errors.append(f"Configuration validation error: {str(e)}")
+        
+        return errors
+    
+    def get_memory_limits(self) -> Dict[str, int]:
+        """Get memory-related configuration limits."""
+        return {
+            'cache_size_mb': self.get('performance.cache_size_mb', 100),
+            'max_file_size_mb': self.get('scanning.max_file_size_mb', 500),
+            'max_report_size_mb': self.get('reporting.max_report_size_mb', 50)
+        }
+    
+    def get_performance_config(self) -> Dict[str, Any]:
+        """Get performance-related configuration."""
+        return {
+            'max_workers': self.get('scanning.max_workers', 4),
+            'batch_size': self.get('scanning.batch_size', 1000),
+            'connection_timeout': self.get('performance.connection_timeout', 30),
+            'query_timeout': self.get('performance.query_timeout', 60),
+            'enable_compression': self.get('performance.enable_compression', True)
+        }

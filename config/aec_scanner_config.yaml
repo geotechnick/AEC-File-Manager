@@ -81,3 +81,13 @@ performance:
   query_timeout: 60  # Database query timeout (seconds)
   cache_size_mb: 100  # Memory cache size limit
   enable_compression: true  # Compress stored metadata
+  max_db_connections: 10  # Maximum database connections in pool
+  memory_warning_threshold: 80.0  # Memory usage warning threshold (%)
+  memory_critical_threshold: 90.0  # Memory usage critical threshold (%)
+  
+# Security Configuration
+security:
+  enable_path_validation: true  # Enable file path security validation
+  enable_input_validation: true  # Enable input data validation
+  max_file_size_mb: 500  # Maximum file size for processing
+  log_security_events: true  # Log security-related events

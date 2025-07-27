@@ -9,8 +9,14 @@ PyYAML>=6.0
 # Optional PostgreSQL support (uncomment if needed)
 # psycopg2-binary>=2.9.0
 
-# Performance monitoring (optional)
-# psutil>=5.8.0
+# Performance monitoring
+psutil>=5.8.0
+
+# Async file operations
+aiofiles>=23.0.0
+
+# Configuration file monitoring
+watchdog>=3.0.0
 
 # Enhanced file type support (optional)
 # Pillow>=9.0.0  # For enhanced image metadata extraction

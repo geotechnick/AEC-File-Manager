@@ -10,11 +10,153 @@ import json
 import logging
 import sqlite3
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Union, Tuple
 from contextlib import contextmanager
 from dataclasses import asdict
+from queue import Queue, Empty
+from functools import lru_cache
+import weakref
+
+
+class ConnectionPool:
+    """
+    Database connection pool for improved performance and resource management.
+    """
+    
+    def __init__(self, connection_string: str, max_connections: int = 10, timeout: int = 30):
+        self.connection_string = connection_string
+        self.max_connections = max_connections
+        self.timeout = timeout
+        self._pool = Queue(maxsize=max_connections)
+        self._all_connections = weakref.WeakSet()
+        self._lock = threading.Lock()
+        self.db_type = 'postgresql' if connection_string.startswith(('postgresql://', 'postgres://')) else 'sqlite'
+        
+        # Initialize pool with connections
+        self._populate_pool()
+    
+    def _populate_pool(self):
+        """Initialize the connection pool."""
+        for _ in range(self.max_connections):
+            conn = self._create_connection()
+            if conn:
+                self._pool.put(conn)
+    
+    def _create_connection(self):
+        """Create a new database connection."""
+        try:
+            if self.db_type == 'sqlite':
+                db_path = Path(self.connection_string)
+                db_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                conn = sqlite3.connect(
+                    self.connection_string,
+                    timeout=self.timeout,
+                    check_same_thread=False
+                )
+                conn.row_factory = sqlite3.Row
+                # Enable WAL mode for better concurrency
+                conn.execute("PRAGMA journal_mode=WAL")
+                conn.execute("PRAGMA synchronous=NORMAL")
+                conn.execute("PRAGMA cache_size=10000")
+                conn.execute("PRAGMA temp_store=MEMORY")
+                
+            else:  # PostgreSQL
+                import psycopg2
+                from psycopg2.extras import RealDictCursor
+                conn = psycopg2.connect(
+                    self.connection_string,
+                    connect_timeout=self.timeout,
+                    cursor_factory=RealDictCursor
+                )
+                conn.autocommit = False
+            
+            self._all_connections.add(conn)
+            return conn
+            
+        except Exception as e:
+            logging.error(f"Failed to create database connection: {e}")
+            return None
+    
+    @contextmanager
+    def get_connection(self):
+        """Get a connection from the pool."""
+        conn = None
+        try:
+            # Try to get connection from pool with timeout
+            try:
+                conn = self._pool.get(timeout=5)
+            except Empty:
+                # Pool is empty, create new connection if under limit
+                with self._lock:
+                    if len(self._all_connections) < self.max_connections:
+                        conn = self._create_connection()
+                    else:
+                        # Wait longer for connection
+                        conn = self._pool.get(timeout=self.timeout)
+            
+            if conn is None:
+                raise RuntimeError("Unable to obtain database connection")
+            
+            # Test connection health
+            try:
+                if self.db_type == 'sqlite':
+                    conn.execute("SELECT 1")
+                else:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT 1")
+                    cursor.close()
+            except Exception:
+                # Connection is stale, create new one
+                conn.close()
+                conn = self._create_connection()
+                if conn is None:
+                    raise RuntimeError("Unable to create new database connection")
+            
+            yield conn
+            
+        except Exception as e:
+            if conn:
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+            raise
+        else:
+            if conn:
+                try:
+                    conn.commit()
+                except Exception as e:
+                    conn.rollback()
+                    raise
+        finally:
+            if conn:
+                try:
+                    # Return connection to pool
+                    self._pool.put_nowait(conn)
+                except:
+                    # Pool is full, close connection
+                    conn.close()
+    
+    def close_all(self):
+        """Close all connections in the pool."""
+        # Close pooled connections
+        while not self._pool.empty():
+            try:
+                conn = self._pool.get_nowait()
+                conn.close()
+            except Empty:
+                break
+        
+        # Close any remaining connections
+        for conn in list(self._all_connections):
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 
 class DatabaseManager:
@@ -162,7 +304,8 @@ class DatabaseManager:
         self, 
         connection_string: str,
         logger: Optional[logging.Logger] = None,
-        connection_timeout: int = 30
+        connection_timeout: int = 30,
+        max_connections: int = 10
     ):
         """
         Initialize the Database Manager.
@@ -171,11 +314,18 @@ class DatabaseManager:
             connection_string: Database connection string (SQLite file path or PostgreSQL URL)
             logger: Optional logger instance
             connection_timeout: Connection timeout in seconds
+            max_connections: Maximum number of connections in pool
         """
         self.connection_string = connection_string
         self.logger = logger or logging.getLogger(__name__)
         self.connection_timeout = connection_timeout
-        self._local = threading.local()
+        
+        # Initialize connection pool
+        self.connection_pool = ConnectionPool(
+            connection_string, 
+            max_connections=max_connections, 
+            timeout=connection_timeout
+        )
         
         # Determine database type
         if connection_string.startswith(('postgresql://', 'postgres://')):
@@ -188,54 +338,107 @@ class DatabaseManager:
         else:
             self.db_type = 'sqlite'
             self.db_module = sqlite3
+        
+        # Query cache for frequently used queries
+        self._query_cache = {}
+        self._cache_lock = threading.Lock()
             
-        self.logger.info(f"Initialized DatabaseManager with {self.db_type} backend")
+        self.logger.info(f"Initialized DatabaseManager with {self.db_type} backend and connection pool")
     
     @contextmanager
     def get_connection(self):
         """
-        Get a database connection with proper resource management.
-        Uses thread-local storage for connection pooling.
+        Get a database connection from the connection pool.
         """
-        # Check if we have a connection in thread-local storage
-        if not hasattr(self._local, 'connection') or self._local.connection is None:
-            try:
-                if self.db_type == 'sqlite':
-                    # Ensure directory exists for SQLite
-                    db_path = Path(self.connection_string)
-                    db_path.parent.mkdir(parents=True, exist_ok=True)
-                    
-                    self._local.connection = sqlite3.connect(
-                        self.connection_string,
-                        timeout=self.connection_timeout,
-                        check_same_thread=False
-                    )
-                    self._local.connection.row_factory = sqlite3.Row  # Enable column access by name
-                    
-                else:  # PostgreSQL
-                    self._local.connection = self.db_module.connect(
-                        self.connection_string,
-                        connect_timeout=self.connection_timeout
-                    )
-                    
-            except Exception as e:
-                self.logger.error(f"Failed to connect to database: {e}")
-                raise
-        
-        try:
-            yield self._local.connection
-        except Exception as e:
-            self._local.connection.rollback()
-            self.logger.error(f"Database operation failed, rolled back: {e}")
-            raise
-        else:
-            self._local.connection.commit()
+        with self.connection_pool.get_connection() as conn:
+            yield conn
     
     def close_connection(self):
-        """Close the thread-local database connection."""
-        if hasattr(self._local, 'connection') and self._local.connection:
-            self._local.connection.close()
-            self._local.connection = None
+        """Close all connections in the pool."""
+        self.connection_pool.close_all()
+    
+    @lru_cache(maxsize=128)
+    def _get_cached_query_result(self, query: str, params_hash: str, cache_timeout: int = 300):
+        """
+        Get cached query result. Only for read-only queries.
+        
+        Args:
+            query: SQL query
+            params_hash: Hash of query parameters
+            cache_timeout: Cache timeout in seconds
+            
+        Returns:
+            Cached result or None if not cached/expired
+        """
+        cache_key = f"{query}:{params_hash}"
+        
+        with self._cache_lock:
+            if cache_key in self._query_cache:
+                result, timestamp = self._query_cache[cache_key]
+                if time.time() - timestamp < cache_timeout:
+                    return result
+                else:
+                    # Remove expired entry
+                    del self._query_cache[cache_key]
+        
+        return None
+    
+    def _cache_query_result(self, query: str, params_hash: str, result: Any):
+        """Cache query result."""
+        cache_key = f"{query}:{params_hash}"
+        
+        with self._cache_lock:
+            # Limit cache size
+            if len(self._query_cache) > 1000:
+                # Remove oldest entries
+                oldest_keys = sorted(self._query_cache.keys(), 
+                                   key=lambda k: self._query_cache[k][1])[:100]
+                for key in oldest_keys:
+                    del self._query_cache[key]
+            
+            self._query_cache[cache_key] = (result, time.time())
+    
+    def _execute_cached_query(self, query: str, params: tuple = (), cache: bool = False, cache_timeout: int = 300):
+        """
+        Execute query with optional caching for read operations.
+        
+        Args:
+            query: SQL query
+            params: Query parameters
+            cache: Whether to use caching
+            cache_timeout: Cache timeout in seconds
+            
+        Returns:
+            Query results
+        """
+        if cache and query.strip().upper().startswith('SELECT'):
+            # Generate hash of parameters for cache key
+            import hashlib
+            params_hash = hashlib.md5(str(params).encode()).hexdigest()
+            
+            # Try to get from cache first
+            cached_result = self._get_cached_query_result(query, params_hash, cache_timeout)
+            if cached_result is not None:
+                return cached_result
+        
+        # Execute query
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            
+            if query.strip().upper().startswith('SELECT'):
+                if self.db_type == 'sqlite':
+                    result = [dict(row) for row in cursor.fetchall()]
+                else:
+                    result = [dict(row) for row in cursor.fetchall()]
+                
+                # Cache result if caching is enabled
+                if cache:
+                    self._cache_query_result(query, params_hash, result)
+                
+                return result
+            else:
+                return cursor.rowcount
     
     def initialize_database(self) -> bool:
         """
