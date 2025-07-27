@@ -503,7 +503,7 @@ Always use **MMDDYY** format for consistent and compact file naming.
 ```bash
 # Clone the repository
 git clone https://github.com/geotechnick/AEC-File-Manager
-cd aec-directory-scanner
+cd AEC-File-Manager
 
 # Install dependencies
 pip install -r requirements.txt
