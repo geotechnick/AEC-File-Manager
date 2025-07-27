@@ -31,7 +31,7 @@ class ConnectionPool:
         self.max_connections = max_connections
         self.timeout = timeout
         self._pool = Queue(maxsize=max_connections)
-        self._all_connections = weakref.WeakSet()
+        self._all_connections = set()  # Use regular set instead of WeakSet for SQLite
         self._lock = threading.Lock()
         self.db_type = 'postgresql' if connection_string.startswith(('postgresql://', 'postgres://')) else 'sqlite'
         
@@ -157,6 +157,8 @@ class ConnectionPool:
                 conn.close()
             except Exception:
                 pass
+        
+        self._all_connections.clear()
 
 
 class DatabaseManager:

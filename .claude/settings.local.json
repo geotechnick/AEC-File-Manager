@@ -6,7 +6,10 @@
       "Bash(rm:*)",
       "Bash(mkdir:*)",
       "Bash(find:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(aec-scanner:*)",
+      "Bash(true)"
     ],
     "deny": []
   }

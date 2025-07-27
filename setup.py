@@ -76,6 +76,7 @@ setup(
     entry_points={
         "console_scripts": [
             "aec-scanner=aec_scanner_cli:main",
+            "aec=aec_streamlined_cli:main",
         ],
     },
     

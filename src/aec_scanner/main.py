@@ -21,7 +21,11 @@ from .utils.config_manager import ConfigManager
 from .utils.error_handler import ErrorHandler
 from .utils.memory_manager import get_resource_manager, MemoryMonitor
 from .utils.security_validator import SecurityManager
-from .exceptions import *
+from .exceptions import (
+    AECScannerException, DatabaseError, FileSystemError, ScanningError,
+    MetadataExtractionError, ConfigurationError, ValidationError, 
+    ProjectNotFoundError, ResourceLimitError, RetryableError
+)
 
 
 class AECDirectoryScanner:
@@ -84,7 +88,7 @@ class AECDirectoryScanner:
             
             if enable_async:
                 async_config = scanner_config.copy()
-                async_config['max_concurrent'] = scanner_config.pop('max_workers')
+                async_config['max_concurrent'] = async_config.pop('max_workers')
                 self.async_file_scanner = AsyncFileSystemScanner(**async_config)
             else:
                 self.async_file_scanner = None
@@ -551,7 +555,7 @@ class AECDirectoryScanner:
                     # Prepare file data for database
                     file_data = {
                         "project_id": project_id,
-                        "directory_id": self._get_or_create_directory_id(project_id, file_info.parent_directory)
+                        "directory_id": self._get_or_create_directory_id(project_id, file_info.parent_directory),
                         "file_name": file_info.file_name,
                         "file_path": file_info.file_path,
                         "file_extension": file_info.file_extension,
@@ -588,7 +592,7 @@ class AECDirectoryScanner:
                 "files_scanned": len(scan_results),
                 "files_added": files_added,
                 "files_updated": files_updated,
-                "files_removed": self._detect_removed_files(project_id, scan_results)
+                "files_removed": self._detect_removed_files(project_id, scan_results),
                 "errors_encountered": len(errors),
                 "scan_status": "completed" if len(errors) == 0 else "completed_with_errors",
                 "errors": errors
