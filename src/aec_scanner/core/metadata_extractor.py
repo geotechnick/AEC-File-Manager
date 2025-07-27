@@ -514,13 +514,13 @@ class MetadataExtractor:
         
         # AEC file naming patterns - Comprehensive system supporting full specification
         self.aec_patterns = {
-            # Primary format: ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
-            "primary_format": r"([A-Z0-9]{3,8})_([A-Z]{2})_([A-Z]{1,2}|EN|SU|PM|GE)_([A-Z0-9]{2,6})_([A-Z0-9]{1,4})_([CR]\d{1,2}|[A-Z]{3})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z0-9]{2,4})",
+            # Primary format: Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
+            "primary_format": r"([A-Z]{2})_([A-Z]{1,2}|EN|SU|PM|GE)_([A-Z0-9]{2,6})_([A-Z0-9]{1,8})_([CR]\d{1,2}|[A-Z]{2,6})_([0-9]{6})\.([a-z0-9]{2,4})",
             
-            # Basic project identification
-            "project_number": r"[A-Z0-9]{3,8}",  # e.g., PROJ123, ABC123456
-            "project_year": r"20\d{2}",  # 2020-2099
-            "date_format": r"\d{4}-\d{2}-\d{2}",  # YYYY-MM-DD
+            # Basic project identification (legacy support)
+            "project_number": r"[A-Z0-9]{3,8}",  # e.g., PROJ123, ABC123456 (for legacy files)
+            "project_year": r"20\d{2}",  # 2020-2099 (for legacy files)
+            "date_format": r"[0-9]{6}",  # MMDDYY format
             
             # Document identification
             "document_number": r"[A-Z]\d{2}-\d{3}",  # e.g., A01-001, S02-005
@@ -613,11 +613,11 @@ class MetadataExtractor:
             "csi_division": r"(0[0-9]|1[0-6]|2[0-9]|3[0-9]|4[0-9])",  # 00-49
             "csi_section": r"\d{2}\s?\d{2}\s?\d{2}",  # 03 30 00 format
             
-            # Special naming patterns
-            "meeting_format": r"([A-Z0-9]{3,8})_MTG_([0-9]{4}-[0-9]{2}-[0-9]{2})_([A-Za-z]+)\.([a-z]{3,4})",
-            "transmittal_format": r"([A-Z0-9]{3,8})_TXM_([A-Z]{2,4})_([0-9]{3})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
-            "shop_drawing_format": r"([A-Z0-9]{3,8})_SHOP_([A-Z]{1,2})_([A-Z]+)_([A-Z]+)_([CR]\d{1,2})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
-            "as_built_format": r"([A-Z0-9]{3,8})_AB_([A-Z]{1,2})_([A-Z0-9]{1,4})_([0-9]{4}-[0-9]{2}-[0-9]{2})\.([a-z]{3})",
+            # Special naming patterns (without project number, MMDDYY date format)
+            "meeting_format": r"MTG_([0-9]{6})_([A-Za-z]+)\.([a-z]{3,4})",
+            "transmittal_format": r"TXM_([A-Z]{2,4})_([0-9]{3})_([0-9]{6})\.([a-z]{3})",
+            "shop_drawing_format": r"SHOP_([A-Z]{1,2})_([A-Z]+)_([A-Z]+)_([CR]\d{1,2})_([0-9]{6})\.([a-z]{3})",
+            "as_built_format": r"AB_([A-Z]{1,2})_([A-Z0-9]{1,4})_([0-9]{6})\.([a-z]{3})",
             
             # Special identifiers
             "submittal_number": r"SUB-\d{3}",  # SUB-001
@@ -732,18 +732,17 @@ class MetadataExtractor:
         }
         
         try:
-            # Try primary format first: ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
+            # Try primary format first: Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
             primary_match = re.search(patterns["primary_format"], filename, re.IGNORECASE)
             if primary_match:
                 aec_metadata["naming_format"] = "primary"
                 aec_metadata["is_aec_standard"] = True
-                aec_metadata["project_number"] = primary_match.group(1)
-                aec_metadata["phase_code"] = primary_match.group(2)
-                aec_metadata["discipline_code"] = primary_match.group(3)
-                aec_metadata["document_type"] = primary_match.group(4).upper()
-                aec_metadata["sheet_number"] = primary_match.group(5)
-                aec_metadata["revision"] = primary_match.group(6)
-                aec_metadata["date_issued"] = primary_match.group(7)
+                aec_metadata["phase_code"] = primary_match.group(1)
+                aec_metadata["discipline_code"] = primary_match.group(2)
+                aec_metadata["document_type"] = primary_match.group(3).upper()
+                aec_metadata["sheet_number"] = primary_match.group(4)
+                aec_metadata["revision"] = primary_match.group(5)
+                aec_metadata["date_issued"] = primary_match.group(6)
                 
                 # Determine revision type
                 if aec_metadata["revision"].startswith('C'):
@@ -758,7 +757,7 @@ class MetadataExtractor:
                 aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
                 aec_metadata["document_type_name"] = patterns["document_type_full"].get(aec_metadata["document_type"], "Unknown")
                 
-                aec_metadata["extracted_elements"] = ["project_number", "phase_code", "discipline_code", "document_type", "sheet_number", "revision", "date_issued"]
+                aec_metadata["extracted_elements"] = ["phase_code", "discipline_code", "document_type", "sheet_number", "revision", "date_issued"]
                 return aec_metadata
             
             # Try special formats
@@ -774,37 +773,36 @@ class MetadataExtractor:
                 if match:
                     aec_metadata["naming_format"] = format_name
                     aec_metadata["is_aec_standard"] = True
-                    aec_metadata["project_number"] = match.group(1)
                     
                     if format_name == "meeting":
-                        aec_metadata["date_issued"] = match.group(2)
+                        aec_metadata["date_issued"] = match.group(1)
                         aec_metadata["document_type"] = "MTG"
                         aec_metadata["document_type_name"] = "Meeting"
-                        aec_metadata["extracted_elements"] = ["project_number", "date_issued", "document_type"]
+                        aec_metadata["extracted_elements"] = ["date_issued", "document_type"]
                     
                     elif format_name == "transmittal":
-                        aec_metadata["date_issued"] = match.group(4)
+                        aec_metadata["date_issued"] = match.group(3)
                         aec_metadata["document_type"] = "TXM"
                         aec_metadata["document_type_name"] = "Transmittal"
-                        aec_metadata["extracted_elements"] = ["project_number", "date_issued", "document_type"]
+                        aec_metadata["extracted_elements"] = ["date_issued", "document_type"]
                     
                     elif format_name == "shop_drawing":
-                        aec_metadata["discipline_code"] = match.group(2)
-                        aec_metadata["revision"] = match.group(5)
-                        aec_metadata["date_issued"] = match.group(6)
+                        aec_metadata["discipline_code"] = match.group(1)
+                        aec_metadata["revision"] = match.group(4)
+                        aec_metadata["date_issued"] = match.group(5)
                         aec_metadata["document_type"] = "SHOP"
                         aec_metadata["document_type_name"] = "Shop Drawing"
                         aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
-                        aec_metadata["extracted_elements"] = ["project_number", "discipline_code", "revision", "date_issued", "document_type"]
+                        aec_metadata["extracted_elements"] = ["discipline_code", "revision", "date_issued", "document_type"]
                     
                     elif format_name == "as_built":
-                        aec_metadata["discipline_code"] = match.group(2)
-                        aec_metadata["sheet_number"] = match.group(3)
-                        aec_metadata["date_issued"] = match.group(4)
+                        aec_metadata["discipline_code"] = match.group(1)
+                        aec_metadata["sheet_number"] = match.group(2)
+                        aec_metadata["date_issued"] = match.group(3)
                         aec_metadata["document_type"] = "AB"
                         aec_metadata["document_type_name"] = "As-Built"
                         aec_metadata["discipline_name"] = patterns["discipline_full"].get(aec_metadata["discipline_code"], "Unknown")
-                        aec_metadata["extracted_elements"] = ["project_number", "discipline_code", "sheet_number", "date_issued", "document_type"]
+                        aec_metadata["extracted_elements"] = ["discipline_code", "sheet_number", "date_issued", "document_type"]
                     
                     return aec_metadata
             

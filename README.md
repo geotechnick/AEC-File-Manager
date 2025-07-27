@@ -346,7 +346,7 @@ The system enforces standardized naming conventions across all project phases an
 
 ### **Primary Format**
 ```
-ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
+Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.ext
 ```
 
 ### **Document Type Codes**
@@ -391,65 +391,65 @@ ProjectNumber_Phase_DisciplineCode_DocumentType_SheetNumber_RevisionNumber_Date.
 ### **Examples by Document Type**
 
 #### **Drawings**
-- `PROJ123_CD_A_DWG_001_R3_2024-03-15.pdf` - Architectural floor plan
-- `PROJ123_DD_S_DWG_S201_R1_2024-02-28.dwg` - Structural framing plan
-- `PROJ123_CD_M_SCH_M401_R0_2024-04-10.pdf` - Mechanical equipment schedule
+- `CD_A_DWG_001_R3_031524.pdf` - Architectural floor plan
+- `DD_S_DWG_S201_R1_022824.dwg` - Structural framing plan
+- `CD_M_SCH_M401_R0_041024.pdf` - Mechanical equipment schedule
 
 #### **Calculations**
-- `PROJ123_DD_S_CALC_BEAM_R2_2024-02-20.pdf` - Structural beam calculations
-- `PROJ123_CD_M_SIZE_DUCT_R1_2024-03-25.xlsx` - Mechanical duct sizing
-- `PROJ123_CD_E_LOAD_PANEL_R0_2024-04-05.pdf` - Electrical load calculations
+- `DD_S_CALC_BEAM_R2_022024.pdf` - Structural beam calculations
+- `CD_M_SIZE_DUCT_R1_032524.xlsx` - Mechanical duct sizing
+- `CD_E_LOAD_PANEL_R0_040524.pdf` - Electrical load calculations
 
 #### **Reports**
-- `PROJ123_PD_G_RPT_GEOTECH_R0_2024-01-10.pdf` - Geotechnical report
-- `PROJ123_SD_EN_STUDY_ENVIR_R1_2024-01-25.pdf` - Environmental study
-- `PROJ123_CA_GE_MEMO_SAFETY_R0_2024-05-15.docx` - Safety memo
+- `PD_G_RPT_GEOTECH_R0_011024.pdf` - Geotechnical report
+- `SD_EN_STUDY_ENVIR_R1_012524.pdf` - Environmental study
+- `CA_GE_MEMO_SAFETY_R0_051524.docx` - Safety memo
 
 #### **Specifications**
-- `PROJ123_CD_A_SPEC_DIV08_R1_2024-03-30.docx` - Division 08 - Openings
-- `PROJ123_CD_M_SPEC_DIV23_R2_2024-04-12.pdf` - Division 23 - HVAC
+- `CD_A_SPEC_DIV08_R1_033024.docx` - Division 08 - Openings
+- `CD_M_SPEC_DIV23_R2_041224.pdf` - Division 23 - HVAC
 
 #### **Correspondence**
-- `PROJ123_CA_M_RFI_001_R0_2024-05-20.pdf` - Mechanical RFI
-- `PROJ123_CA_S_SUB_STEEL_R1_2024-06-01.pdf` - Structural steel submittal
-- `PROJ123_CA_GE_CO_015_R0_2024-06-10.pdf` - Change Order #15
+- `CA_M_RFI_001_R0_052024.pdf` - Mechanical RFI
+- `CA_S_SUB_STEEL_R1_060124.pdf` - Structural steel submittal
+- `CA_GE_CO_015_R0_061024.pdf` - Change Order #15
 
 #### **Models and CAD**
-- `PROJ123_DD_A_BIM_MODEL_R2_2024-03-01.rvt` - Architectural BIM model
-- `PROJ123_CD_C_CAD_SITE_R1_2024-04-20.dwg` - Civil site plan CAD
+- `DD_A_BIM_MODEL_R2_030124.rvt` - Architectural BIM model
+- `CD_C_CAD_SITE_R1_042024.dwg` - Civil site plan CAD
 
 #### **Photos and Documentation**
-- `PROJ123_CA_GE_PHO_PROG_001_2024-05-25.jpg` - Progress photo
-- `PROJ123_PD_A_PHO_EXIST_001_2024-01-05.jpg` - Existing conditions photo
+- `CA_GE_PHO_PROG_001_052524.jpg` - Progress photo
+- `PD_A_PHO_EXIST_001_010524.jpg` - Existing conditions photo
 
 #### **Permits and Approvals**
-- `PROJ123_CD_A_PER_BUILD_R0_2024-04-01.pdf` - Building permit application
-- `PROJ123_CD_C_PER_STORM_R1_2024-04-15.pdf` - Stormwater permit
+- `CD_A_PER_BUILD_R0_040124.pdf` - Building permit application
+- `CD_C_PER_STORM_R1_041524.pdf` - Stormwater permit
 
 ### **Special Naming Conventions**
 
 #### **Meeting Minutes**
 ```
-ProjectNumber_MTG_YYYY-MM-DD_MeetingType.docx
-PROJ123_MTG_2024-03-15_DesignReview.docx
+MTG_Date_MeetingType.docx
+MTG_031524_DesignReview.docx
 ```
 
 #### **Transmittals**
 ```
-ProjectNumber_TXM_RecipientCode_SequentialNumber_Date.pdf
-PROJ123_TXM_CONT_001_2024-05-10.pdf
+TXM_RecipientCode_SequentialNumber_Date.pdf
+TXM_CONT_001_051024.pdf
 ```
 
 #### **Shop Drawings**
 ```
-ProjectNumber_SHOP_DisciplineCode_Vendor_Item_RevisionNumber_Date.pdf
-PROJ123_SHOP_S_ACME_STEEL_R1_2024-06-15.pdf
+SHOP_DisciplineCode_Vendor_Item_RevisionNumber_Date.pdf
+SHOP_S_ACME_STEEL_R1_061524.pdf
 ```
 
 #### **As-Built Drawings**
 ```
-ProjectNumber_AB_DisciplineCode_SheetNumber_Date.pdf
-PROJ123_AB_A_001_2024-08-30.pdf
+AB_DisciplineCode_SheetNumber_Date.pdf
+AB_A_001_083024.pdf
 ```
 
 ### **Revision Control - Check Print and Clean Document System**
@@ -475,13 +475,13 @@ PROJ123_AB_A_001_2024-08-30.pdf
 - **PCO** - Issued for Potential Change Order review
 
 #### **Revision Tracking Examples**
-- `PROJ123_DD_A_DWG_001_C05_2024-03-10.pdf` (5th internal check print)
-- `PROJ123_DD_A_DWG_001_R1_2024-03-15.pdf` (1st clean issue to client)
-- `PROJ123_CD_S_DWG_S201_C12_2024-04-20.pdf` (12th internal check print)
-- `PROJ123_CD_S_DWG_S201_IFC_2024-05-01.pdf` (Final issued for construction)
+- `DD_A_DWG_001_C05_031024.pdf` (5th internal check print)
+- `DD_A_DWG_001_R1_031524.pdf` (1st clean issue to client)
+- `CD_S_DWG_S201_C12_042024.pdf` (12th internal check print)
+- `CD_S_DWG_S201_IFC_050124.pdf` (Final issued for construction)
 
 ### **Date Format**
-Always use **YYYY-MM-DD** format for consistent sorting and international compatibility.
+Always use **MMDDYY** format for consistent and compact file naming.
 
 ### **File Extension Guidelines**
 - **.pdf** - Final issued documents
