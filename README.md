@@ -502,7 +502,7 @@ Always use **MMDDYY** format for consistent and compact file naming.
 ### Quick Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/aec-directory-scanner.git
+git clone https://github.com/geotechnick/AEC-File-Manager
 cd aec-directory-scanner
 
 # Install dependencies
@@ -1042,6 +1042,7 @@ def scan_project():
 - **🔄 Real-time Collaboration**: Multi-user synchronization
 - **📊 Advanced Analytics**: Project insights and trend analysis
 - **🔗 API Ecosystem**: RESTful APIs for third-party integration
+- Easy data pipelines to build custom AI/Agents
 
 ### **Industry-Specific Extensions**
 - **BIM Integration**: Enhanced Building Information Modeling support
@@ -1053,12 +1054,6 @@ def scan_project():
 
 ### **Open Source License**
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### **Professional Support**
-- **Enterprise Licensing**: Available for commercial deployments
-- **Custom Development**: Tailored solutions for specific requirements  
-- **Training & Consulting**: Implementation and best practices guidance
-- **24/7 Support**: Available for critical production environments
 
 ## 🤝 Contributing
 
