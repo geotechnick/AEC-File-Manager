@@ -8,9 +8,16 @@ A smart file management system that creates professional project folder structur
 
 ## 🚀 New User? Start Here!
 
-**For Non-Programmers:** 📖 [**EASY INSTALL GUIDE**](EASY_INSTALL_GUIDE.md) - Step-by-step with pictures  
-**Want to Jump In:** ⚡ [**QUICK START**](QUICK_START.md) - Get organized in 5 minutes  
+**🟢 NO INSTALLATION NEEDED:** 📖 [**STANDALONE VERSION**](STANDALONE_README.md) - Just download & double-click!  
+**For Non-Programmers:** 📖 [**EASY INSTALL GUIDE**](EASY_INSTALL_GUIDE.md) - Zero installation required  
+**Want to Jump In:** ⚡ [**QUICK START**](QUICK_START.md) - Get organized in 2 minutes  
 **Technical Users:** 👨‍💻 Continue reading this README for full details
+
+### ⚡ Super Quick Start (30 seconds):
+1. **Download** this repository as ZIP
+2. **Extract** the files
+3. **Double-click** `AEC-Setup-Standalone.bat`
+4. **Done!** Professional project structure created instantly
 
 ---
 
@@ -506,12 +513,18 @@ Always use **MMDDYY** format for consistent and compact file naming.
 
 ## 🚀 Installation (Choose Your Path)
 
-### 🟢 Easy Installation (Recommended for Most Users)
-1. **Download**: [Get the files from GitHub](https://github.com/geotechnick/AEC-File-Manager) (green "Code" button → "Download ZIP")
-2. **Run**: Double-click `INSTALL.bat` (Windows) or follow [EASY_INSTALL_GUIDE.md](EASY_INSTALL_GUIDE.md)
-3. **Start**: Open command prompt, type `aec` in any project folder
+### 🟢 Zero Installation (Recommended for Everyone!)
+**No Python, no setup, no headaches - just works!**
 
-### 🟡 Technical Installation (For Developers)
+1. **Download**: [Get the files from GitHub](https://github.com/geotechnick/AEC-File-Manager) (green "Code" button → "Download ZIP")
+2. **Extract**: Unzip the downloaded file
+3. **Run**: Double-click `AEC-Setup-Standalone.bat` or `AEC-Organize-Files.bat`
+
+**That's it!** Works on any Windows computer immediately.
+
+### 🟡 Full Installation (For Advanced Features)
+If you want HTML reports, metadata extraction, and database features:
+
 ```bash
 # Clone the repository
 git clone https://github.com/geotechnick/AEC-File-Manager
@@ -523,11 +536,10 @@ pip install -e .
 ```
 
 ### Prerequisites
-- **Windows 10/11** (or any system with Python 3.8+)
-- **Internet connection** for initial setup
-- **15 minutes** for installation
-
-No special technical knowledge required!
+- **Windows 10/11** (standalone version)
+- **OR Python 3.8+** (full featured version)
+- **2 minutes** setup time for standalone
+- **15 minutes** setup time for full version
 
 ## ⚡ Quick Start - Ultra Simple Commands
 

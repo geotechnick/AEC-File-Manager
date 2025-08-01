@@ -1,43 +1,22 @@
-# 🏗️ AEC File Manager - Easy Installation Guide
+# 🏗️ AEC File Manager - Zero Installation Guide
 
-**For Non-Programmers: Get Started in 3 Simple Steps!**
+**No Installation Required! Get Started in 2 Simple Steps!**
 
-This guide will help you install and use the AEC File Manager without any programming knowledge. Just follow the pictures and instructions below.
+This guide will help you use the AEC File Manager without installing anything - no Python, no complex setup, just download and run!
 
 ---
 
 ## 📋 What You Need
 
 ✅ **Windows 10 or 11** (the version you're probably already using)  
-✅ **15 minutes** of your time  
+✅ **2 minutes** of your time  
 ✅ **Internet connection** to download files  
 
-That's it! No special technical knowledge required.
+**That's it! Zero installation, zero setup, zero headaches.**
 
 ---
 
-## 🚀 Step 1: Install Python (One-Time Setup)
-
-Python is a free program that our AEC File Manager needs to run. Think of it like installing Microsoft Office - you do it once and then use it forever.
-
-### Download Python:
-1. **Go to**: https://www.python.org/downloads/
-2. **Click the big yellow button** that says "Download Python 3.x.x"
-3. **Wait for download** (it's about 25MB - like downloading 5-6 photos)
-
-### Install Python:
-1. **Find the file** you just downloaded (usually in your Downloads folder)
-2. **Double-click** the file to start installation
-3. **IMPORTANT**: ✅ Check the box "Add Python to PATH" at the bottom
-4. **Click "Install Now"**
-5. **Wait 2-3 minutes** for installation to complete
-6. **Click "Close"** when finished
-
-> 💡 **Why Python?** Many professional tools use Python because it's reliable and safe. It won't harm your computer.
-
----
-
-## 🚀 Step 2: Download AEC File Manager
+## 🚀 Step 1: Download AEC File Manager
 
 ### Get the Files:
 1. **Go to**: [AEC File Manager on GitHub](https://github.com/geotechnick/AEC-File-Manager)
@@ -54,30 +33,42 @@ Python is a free program that our AEC File Manager needs to run. Think of it lik
 
 ---
 
-## 🚀 Step 3: Install AEC File Manager
+## 🚀 Step 2: Start Using It (No Installation!)
 
-### Simple Installation:
-1. **Open the AEC File Manager folder** you just extracted
-2. **Hold Shift and right-click** in an empty space inside the folder
-3. **Select "Open PowerShell window here"** or "Open command window here"
-4. **Type this command** and press Enter:
-   ```
-   pip install -r requirements.txt
-   ```
-5. **Wait 1-2 minutes** while it installs (you'll see text scrolling)
-6. **Type this command** and press Enter:
-   ```
-   pip install -e .
-   ```
-7. **Wait another minute** for final installation
+You have **two options** - choose what works best for you:
 
-### Test Installation:
-**Type this command** and press Enter:
-```
-aec status
-```
+### Option A: Basic Standalone Scripts (Recommended)
+Perfect for most users who just want to organize their projects.
 
-If you see some text about "AEC Scanner Status" - **Congratulations! You're ready to go!** 🎉
+**Just double-click these files:**
+- **`AEC-Setup-Standalone.bat`** - Creates professional project folders
+- **`AEC-Organize-Files.bat`** - Organizes your existing files automatically
+
+**That's it!** No installation needed. These work on any Windows computer.
+
+### Option B: Full Featured Version
+If you want advanced features like metadata extraction and HTML reports:
+
+1. **Double-click `build_standalone.py`** (requires Python - we'll guide you)
+2. **Or follow the Python installation steps below** (one-time setup)
+
+---
+
+## 🎯 Quick Start - No Installation Method
+
+### Create a New Project:
+1. **Double-click** `AEC-Setup-Standalone.bat`
+2. **Enter your project name** when asked (e.g., "Office Building")
+3. **Enter project year** (e.g., "2024")
+4. **Choose location** or press Enter for current folder
+5. **Wait 10 seconds** - Done! 506 professional folders created!
+
+### Organize Existing Files:
+1. **Put the batch files** in your project folder
+2. **Double-click** `AEC-Organize-Files.bat`
+3. **Follow the prompts** - your files get organized automatically!
+
+**No command line, no technical knowledge needed!**
 
 ---
 
