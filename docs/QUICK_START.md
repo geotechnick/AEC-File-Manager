@@ -140,7 +140,7 @@ You now have a professional AEC file management system that:
 2. `aec scan` - Update when you add files  
 3. `aec report` - Create project summary
 
-Need more help? Check out `EASY_INSTALL_GUIDE.md` for detailed instructions or visit our [GitHub page](https://github.com/geotechnick/AEC-File-Manager) for support.
+Need more help? Check out [EASY_INSTALL_GUIDE.md](EASY_INSTALL_GUIDE.md) for detailed instructions or visit our [GitHub page](https://github.com/geotechnick/AEC-File-Manager) for support.
 
 ---
 
