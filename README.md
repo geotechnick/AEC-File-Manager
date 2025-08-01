@@ -1,6 +1,18 @@
-# AEC Directory Scanner and Metadata Database System
+# 🏗️ AEC File Manager - Professional Project Organization Made Simple
 
-A comprehensive Python-based software system that automatically builds and manages the standardized AEC project directory structure, scans all files within the directory tree, extracts detailed metadata from each file, and stores this information in a structured database. This system follows industry-standard AEC practices with complete CSI MasterFormat integration.
+**Automatically organize any AEC project in minutes, not hours!**
+
+A smart file management system that creates professional project folder structures, organizes your files, and generates beautiful reports - all automatically. No programming knowledge required!
+
+---
+
+## 🚀 New User? Start Here!
+
+**For Non-Programmers:** 📖 [**EASY INSTALL GUIDE**](EASY_INSTALL_GUIDE.md) - Step-by-step with pictures  
+**Want to Jump In:** ⚡ [**QUICK START**](QUICK_START.md) - Get organized in 5 minutes  
+**Technical Users:** 👨‍💻 Continue reading this README for full details
+
+---
 
 ## 🏗️ Features
 
@@ -492,88 +504,63 @@ Always use **MMDDYY** format for consistent and compact file naming.
 - **.pptx** - PowerPoint presentations
 - **.jpg/.png** - Images and photos
 
-## 🚀 Installation
+## 🚀 Installation (Choose Your Path)
 
-### Prerequisites
-- **Python 3.8+** with pip package manager
-- **Git** for repository management
-- **Optional**: PostgreSQL for production database
+### 🟢 Easy Installation (Recommended for Most Users)
+1. **Download**: [Get the files from GitHub](https://github.com/geotechnick/AEC-File-Manager) (green "Code" button → "Download ZIP")
+2. **Run**: Double-click `INSTALL.bat` (Windows) or follow [EASY_INSTALL_GUIDE.md](EASY_INSTALL_GUIDE.md)
+3. **Start**: Open command prompt, type `aec` in any project folder
 
-### Quick Installation
+### 🟡 Technical Installation (For Developers)
 ```bash
 # Clone the repository
 git clone https://github.com/geotechnick/AEC-File-Manager
 cd AEC-File-Manager
 
-# Install dependencies
+# Quick setup
 pip install -r requirements.txt
-
-# Install the package
 pip install -e .
 ```
 
-### Enhanced Installation (Optional)
+### Prerequisites
+- **Windows 10/11** (or any system with Python 3.8+)
+- **Internet connection** for initial setup
+- **15 minutes** for installation
+
+No special technical knowledge required!
+
+## ⚡ Quick Start - Ultra Simple Commands
+
+### For Everyone (No Programming Needed):
 ```bash
-# For PostgreSQL support
-pip install psycopg2-binary
+# Set up a new project (creates all folders automatically)
+aec
 
-# For enhanced metadata extraction
-pip install Pillow PyPDF2 python-magic
+# Scan your files and organize them
+aec scan
 
-# For performance monitoring
-pip install psutil
+# Generate a beautiful HTML report
+aec report
 
-# For development tools
-pip install pytest pytest-cov black flake8
+# Check system status
+aec status
 ```
 
-## ⚡ Quick Start Guide
+**That's it!** The system auto-detects your project settings and handles everything else.
 
-### 1. **Initialize a New Project**
+### For Advanced Users:
 ```bash
-aec-scanner init \
-  --project-number PROJ2024 \
-  --project-name "Office Building" \
-  --path "/projects" \
-  --project-year 2024
-```
-*Creates: `/projects/OFFICE_BUILDING_2024/` with 506 directories*
+# Manual project setup with specific settings
+aec init --project-name "Office Building" --project-year 2024
 
-### 2. **Scan Project Files**
-```bash
-# Full project scan with progress tracking
-aec-scanner scan --project-id 1 --type full --verbose
+# Detailed scanning options
+aec scan --verbose --type full
 
-# Incremental scan for changed files only
-aec-scanner scan --project-id 1 --type incremental
+# Custom reports and exports
+aec report --format pdf --output custom_report.pdf
 ```
 
-### 3. **Extract Comprehensive Metadata**
-```bash
-# Extract metadata from all files
-aec-scanner extract --project-id 1 --force-refresh
-
-# Extract from specific file types only
-aec-scanner extract --project-id 1 --file-types pdf,dwg
-```
-
-### 4. **Generate Professional Reports**
-```bash
-# HTML report with visualizations
-aec-scanner report --project-id 1 --format html --output reports/
-
-# JSON export for integration
-aec-scanner export --project-id 1 --format json --output project_data.json
-```
-
-### 5. **Validate and Maintain Structure**
-```bash
-# Validate project integrity
-aec-scanner validate --project-id 1 --repair-missing
-
-# Monitor for real-time changes
-aec-scanner monitor --project-id 1 --watch-interval 30
-```
+**📖 New to this?** Check out the [QUICK_START.md](QUICK_START.md) guide for step-by-step instructions with examples.
 
 ## ⚙️ Configuration
 
