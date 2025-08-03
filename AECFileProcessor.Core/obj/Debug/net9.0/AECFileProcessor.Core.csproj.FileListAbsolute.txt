@@ -1,0 +1,13 @@
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\bin\Debug\net9.0\AECFileProcessor.Core.deps.json
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\bin\Debug\net9.0\AECFileProcessor.Core.dll
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\bin\Debug\net9.0\AECFileProcessor.Core.pdb
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.csproj.AssemblyReference.cache
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.AssemblyInfoInputs.cache
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.AssemblyInfo.cs
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.csproj.CoreCompileInputs.cache
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.sourcelink.json
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.dll
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\refint\AECFileProcessor.Core.dll
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\AECFileProcessor.Core.pdb
+C:\Users\hosti\Documents\GitHub\AEC-File-Manager\AECFileProcessor.Core\obj\Debug\net9.0\ref\AECFileProcessor.Core.dll

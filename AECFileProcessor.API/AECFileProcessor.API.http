@@ -1,0 +1,6 @@
+@AECFileProcessor.API_HostAddress = http://localhost:5173
+
+GET {{AECFileProcessor.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

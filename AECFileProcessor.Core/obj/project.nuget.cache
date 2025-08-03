@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "LVvTCsUt3YY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\hosti\\Documents\\GitHub\\AEC-File-Manager\\AECFileProcessor.Core\\AECFileProcessor.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hosti\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.7\\microsoft.extensions.dependencyinjection.abstractions.9.0.7.nupkg.sha512",
+    "C:\\Users\\hosti\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.7\\microsoft.extensions.logging.abstractions.9.0.7.nupkg.sha512",
+    "C:\\Users\\hosti\\.nuget\\packages\\system.text.json\\9.0.7\\system.text.json.9.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}

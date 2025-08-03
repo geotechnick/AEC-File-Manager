@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "ruR/WmVydpGj9Cv+ERE+YQ/wBDtC5ZINMPcAswqEw8g=",
+  "Source": "AECFileProcessor.API",
+  "BasePath": "_content/AECFileProcessor.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

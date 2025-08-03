@@ -10,7 +10,17 @@
       "Bash(pip install:*)",
       "Bash(aec-scanner:*)",
       "Bash(true)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln add:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet add reference:*)",
+      "Bash(dotnet build)",
+      "Bash(dotnet remove package:*)",
+      "Bash(dotnet run:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
