@@ -2,22 +2,22 @@
 
 A local-first AEC (Architecture, Engineering, Construction) file processing system that intelligently organizes and processes project files according to industry standards.
 
-## 🚀 Current Status
+## Current Status
 
-**Phase 0: Local Foundation - ✅ COMPLETED**
+**Phase 0: Local Foundation - COMPLETED**
 
 The system has been completely rebuilt from the ground up following a systematic development approach. We now have a solid foundation with proper AEC industry standards implementation.
 
-### ✅ What's Working Now
+### What's Working Now
 
-- **🏗️ Complete .NET Solution**: Core library, CLI application, API, and test projects
-- **📁 AEC Directory Standards**: Supports standard `PROJECT_NAME_PROJECT_NUMBER/` structure
-- **📋 Industry File Naming**: Handles `Phase_DocumentType_Description_Revision_Date.ext` format
-- **👀 Real-time File Monitoring**: Watches directories for changes and processes files automatically
-- **🔍 Intelligent Classification**: Automatically categorizes files by phase, discipline, and document type
-- **⚡ CLI Interface**: Complete command-line tool with watch, process, and query commands
+- **Complete .NET Solution**: Core library, CLI application, API, and test projects
+- **AEC Directory Standards**: Supports standard `PROJECT_NAME_PROJECT_NUMBER/` structure
+- **Industry File Naming**: Handles `Phase_DocumentType_Description_Revision_Date.ext` format
+- **Real-time File Monitoring**: Watches directories for changes and processes files automatically
+- **Intelligent Classification**: Automatically categorizes files by phase, discipline, and document type
+- **CLI Interface**: Complete command-line tool with watch, process, and query commands
 
-### 📊 Supported Standards
+### Supported Standards
 
 #### Phase Codes
 - **PD** - Pre-Design/Programming
@@ -53,7 +53,33 @@ The system has been completely rebuilt from the ground up following a systematic
 - `.xlsx` - Excel spreadsheets
 - `.ifc` - BIM exchange files
 
-## 🛠️ Usage
+## Getting Started
+
+### Installation from GitHub
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/geotechnick/AEC-File-Manager.git
+   cd AEC-File-Manager
+   ```
+
+2. **Prerequisites:**
+   - .NET 9.0 SDK or later
+   - Git
+
+3. **Build the solution:**
+   ```bash
+   dotnet restore
+   dotnet build
+   ```
+
+4. **Run the CLI application:**
+   ```bash
+   cd AECFileProcessor.CLI
+   dotnet run help
+   ```
+
+## Usage
 
 ### CLI Commands
 
@@ -91,51 +117,39 @@ MyProject_12345/
     └── DD_CALC_StructuralBeams_R2_022024.pdf
 ```
 
-## 🔧 Development Setup
+## Development
 
-### Prerequisites
-- .NET 9.0 SDK
-- Git
-
-### Build and Run
+### Running Tests
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd AEC-File-Manager
-
-# Restore dependencies and build
-dotnet restore
-dotnet build
-
-# Run tests
 dotnet test
-
-# Run CLI application
-cd AECFileProcessor.CLI
-dotnet run help
 ```
 
-## 🗺️ Roadmap
+### Building for Release
+```bash
+dotnet build --configuration Release
+```
+
+## Roadmap
 
 ### Phase 1: Enhanced Processing (Next)
-- [ ] SQLite database integration
-- [ ] Advanced CAD metadata extraction
-- [ ] PDF content processing with OCR
-- [ ] Coordination analysis between disciplines
+- SQLite database integration
+- Advanced CAD metadata extraction
+- PDF content processing with OCR
+- Coordination analysis between disciplines
 
 ### Phase 2: Advanced Features
-- [ ] Web API for remote access
-- [ ] Real-time project health dashboards
-- [ ] Automated quality checks
-- [ ] Integration with common AEC tools
+- Web API for remote access
+- Real-time project health dashboards
+- Automated quality checks
+- Integration with common AEC tools
 
 ### Phase 3: Enterprise Features
-- [ ] Multi-project management
-- [ ] Team collaboration features
-- [ ] Advanced reporting and analytics
-- [ ] Cloud deployment options
+- Multi-project management
+- Team collaboration features
+- Advanced reporting and analytics
+- Cloud deployment options
 
-## 🏗️ Architecture
+## Architecture
 
 The system follows a clean architecture pattern with:
 
@@ -145,7 +159,7 @@ The system follows a clean architecture pattern with:
 - **API**: RESTful web API (planned)
 - **Tests**: Comprehensive unit and integration tests
 
-## 📝 File Naming Examples
+## File Naming Examples
 
 ```
 CD_DWG_FloorPlan_Level1_R2_031524.pdf
@@ -158,10 +172,10 @@ CD_DWG_FloorPlan_Level1_R2_031524.pdf
 └───────────────────────────── Project handled by directory structure
 ```
 
-## 🤝 Contributing
+## Contributing
 
 This project follows a systematic development approach. Please see the `references/` folder for detailed architecture and development guidelines.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
