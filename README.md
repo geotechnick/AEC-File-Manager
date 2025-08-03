@@ -11,13 +11,15 @@ The system has been completely rebuilt from the ground up following a systematic
 ### What's Working Now
 
 - **Complete .NET Solution**: Core library, CLI application, API, and test projects
-- **Project Structure Creation**: Automatically creates standard AEC directory structure
+- **Project Structure Creation**: Automatically creates 87 standard AEC directories with CSI MasterFormat divisions
+- **Project Validation**: Validates existing project structures and reports missing directories
 - **AEC Directory Standards**: Supports standard `PROJECT_NAME_PROJECT_NUMBER/` structure
 - **Industry File Naming**: Handles `Phase_DocumentType_Description_Revision_Date.ext` format
 - **Real-time File Monitoring**: Watches directories for changes and processes files automatically
 - **Intelligent Classification**: Automatically categorizes files by phase, discipline, and document type
-- **Project Validation**: Validates existing project structures for completeness
-- **CLI Interface**: Complete command-line tool with create, watch, process, validate, and query commands
+- **Automatic Documentation**: Generates PROJECT_INFO.md and README files with naming conventions
+- **In-Memory Storage**: Local file tracking and metadata storage (SQLite coming in Phase 1)
+- **CLI Interface**: Complete command-line tool with create, validate, watch, process, and query commands
 
 ### Supported Standards
 
@@ -150,6 +152,22 @@ OfficeBuilding_12345/
 ├── 12_ARCHIVE/
 └── PROJECT_INFO.md
 ```
+
+### Generated Documentation
+
+When creating a project, the system automatically generates:
+
+- **PROJECT_INFO.md**: Complete project guide with directory explanations and naming conventions
+- **README.md files**: Guidance files in key directories (Drawings, Specifications, etc.)
+- **Directory structure**: All 87 standard AEC directories following industry best practices
+
+### Project Structure Features
+
+- **87 Standard Directories**: Complete AEC project structure from management to closeout
+- **CSI MasterFormat**: All specification divisions (00-33)
+- **Discipline Separation**: Organized by Architectural, Structural, Civil, MEP, etc.
+- **Validation**: 80% completeness threshold determines if structure is valid
+- **Documentation**: Built-in guidance and naming convention references
 
 ## Development
 
