@@ -83,3 +83,6 @@ Thumbs.db
 *.gguf
 *.bin
 *.safetensors
+
+# Reference folder
+reference/
