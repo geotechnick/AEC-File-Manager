@@ -11,11 +11,13 @@ The system has been completely rebuilt from the ground up following a systematic
 ### What's Working Now
 
 - **Complete .NET Solution**: Core library, CLI application, API, and test projects
+- **Project Structure Creation**: Automatically creates standard AEC directory structure
 - **AEC Directory Standards**: Supports standard `PROJECT_NAME_PROJECT_NUMBER/` structure
 - **Industry File Naming**: Handles `Phase_DocumentType_Description_Revision_Date.ext` format
 - **Real-time File Monitoring**: Watches directories for changes and processes files automatically
 - **Intelligent Classification**: Automatically categorizes files by phase, discipline, and document type
-- **CLI Interface**: Complete command-line tool with watch, process, and query commands
+- **Project Validation**: Validates existing project structures for completeness
+- **CLI Interface**: Complete command-line tool with create, watch, process, validate, and query commands
 
 ### Supported Standards
 
@@ -84,11 +86,17 @@ The system has been completely rebuilt from the ground up following a systematic
 ### CLI Commands
 
 ```bash
+# Create a new project with standard AEC directory structure
+dotnet run --project AECFileProcessor.CLI create-project --path "C:\Projects" --name "OfficeBuilding" --number "12345"
+
+# Validate an existing project structure
+dotnet run --project AECFileProcessor.CLI validate-project --path "C:\Projects\OfficeBuilding_12345"
+
 # Watch a directory for file changes
-dotnet run --project AECFileProcessor.CLI watch --path "C:\Projects\MyProject_12345"
+dotnet run --project AECFileProcessor.CLI watch --path "C:\Projects\OfficeBuilding_12345"
 
 # Process files in a directory once
-dotnet run --project AECFileProcessor.CLI process --path "C:\Projects\MyProject_12345"
+dotnet run --project AECFileProcessor.CLI process --path "C:\Projects\OfficeBuilding_12345"
 
 # Query processed files
 dotnet run --project AECFileProcessor.CLI query
@@ -100,21 +108,47 @@ dotnet run --project AECFileProcessor.CLI help
 
 ### Example File Structure
 
+The `create-project` command automatically creates a complete AEC directory structure:
+
 ```
-MyProject_12345/
+OfficeBuilding_12345/
+├── 00_PROJECT_MANAGEMENT/
+│   ├── Proposals/
+│   ├── Contracts/
+│   ├── Schedule/
+│   └── Budget/
+├── 01_CORRESPONDENCE/
+│   ├── RFIs/
+│   ├── Submittals/
+│   └── Change_Orders/
 ├── 02_DRAWINGS/
 │   ├── Current/
 │   │   ├── Architectural/
 │   │   │   ├── CD_DWG_FloorPlan_Level1_R2_031524.pdf
 │   │   │   └── DD_DWG_SiteLayout_R1_022824.dwg
 │   │   ├── Structural/
-│   │   └── Mechanical/
-│   └── Superseded/
+│   │   ├── Civil/
+│   │   ├── Mechanical/
+│   │   ├── Electrical/
+│   │   └── Plumbing/
+│   ├── Superseded/
+│   ├── Markups/
+│   └── Shop_Drawings/
 ├── 03_SPECIFICATIONS/
-│   ├── CD_SPEC_Division08_Openings_R1_033024.docx
-│   └── CD_SPEC_Division15_HVAC_R2_041224.pdf
-└── 04_CALCULATIONS/
-    └── DD_CALC_StructuralBeams_R2_022024.pdf
+│   ├── Division_00_Bidding/
+│   ├── Division_01_General/
+│   ├── Division_02_Site/
+│   └── [... all CSI divisions]
+├── 04_CALCULATIONS/
+├── 05_REPORTS/
+├── 06_PERMITS_APPROVALS/
+├── 07_SITE_DOCUMENTATION/
+├── 08_MODELS_CAD/
+├── 09_CONSTRUCTION_ADMIN/
+├── 10_CLOSEOUT/
+├── 11_CONSULTANTS/
+├── 12_ARCHIVE/
+└── PROJECT_INFO.md
 ```
 
 ## Development

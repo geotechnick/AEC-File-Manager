@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AECFileProcessor.CLI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bed9afb2045aa1c40c90baf0be74ff690285d9e5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca223a78be54a4f53f7a66e177925c7614964c40")]
 [assembly: System.Reflection.AssemblyProductAttribute("AECFileProcessor.CLI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AECFileProcessor.CLI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
