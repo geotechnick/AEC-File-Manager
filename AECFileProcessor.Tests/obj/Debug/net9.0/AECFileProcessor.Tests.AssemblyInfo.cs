@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AECFileProcessor.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7557434df7f40b7014681b8a628453ed4b28a5f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+296b48d37e91d86ae9c9d5fbaa9ef1dd5b9e978b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AECFileProcessor.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AECFileProcessor.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
