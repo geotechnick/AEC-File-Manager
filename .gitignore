@@ -44,7 +44,7 @@ ENV/
 *~
 
 # Project specific
-models/
+# models/  # Commented out - we need the Models directory for .NET classes
 *.db
 *.sqlite
 *.sqlite3
