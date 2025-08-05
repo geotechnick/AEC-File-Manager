@@ -62,11 +62,13 @@ public class ProjectStructureService : IProjectStructureService
         "03_SPECIFICATIONS/Master_Specification",
         
         "04_CALCULATIONS",
-        "04_CALCULATIONS/Structural",
         "04_CALCULATIONS/Civil",
-        "04_CALCULATIONS/Mechanical",
         "04_CALCULATIONS/Electrical",
-        "04_CALCULATIONS/Other_Disciplines",
+        "04_CALCULATIONS/Mechanical", 
+        "04_CALCULATIONS/Structural",
+        "04_CALCULATIONS/Hydraulic",
+        "04_CALCULATIONS/Geotechnical",
+        "04_CALCULATIONS/Environmental",
         
         "05_REPORTS",
         "05_REPORTS/Geotechnical",
